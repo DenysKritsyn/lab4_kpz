@@ -1,0 +1,41 @@
+.search-box-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 220px;
+  flex: 1;
+}
+
+.search-label {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-wrapper .form-control {
+  width: 100%;
+  padding-right: 2rem;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  font-size: 1.15rem;
+  color: #64748b;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.15rem 0.35rem;
+}
+
+.clear-btn:hover {
+  color: #0f172a;
+}
+

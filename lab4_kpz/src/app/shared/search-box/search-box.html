@@ -1,0 +1,24 @@
+<div class="search-box-field">
+  <label class="search-label" for="shared-search-input">{{ label() }}</label>
+  <div class="search-input-wrapper">
+    <input
+      id="shared-search-input"
+      type="search"
+      class="form-control"
+      [value]="value()"
+      [placeholder]="placeholder()"
+      (input)="onInput($event)"
+    />
+    @if (value()) {
+      <button
+        type="button"
+        class="clear-btn"
+        aria-label="Clear search"
+        (click)="clear()"
+      >
+        &times;
+      </button>
+    }
+  </div>
+</div>
+

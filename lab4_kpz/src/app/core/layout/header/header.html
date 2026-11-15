@@ -1,0 +1,43 @@
+<header class="app-header">
+  <div class="header-inner">
+    <a routerLink="/" class="brand">
+      <span class="brand-badge">+</span>
+      <span class="brand-title">Symptom Diary</span>
+    </a>
+
+    <nav class="main-nav" aria-label="Primary navigation">
+      @if (authService.isAuthenticated()) {
+        <a
+          routerLink="/diary-entries"
+          routerLinkActive="active-link"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          Diary Entries
+        </a>
+        <a routerLink="/diary-entries/new" routerLinkActive="active-link">
+          + New Entry
+        </a>
+        @if (authService.hasRole('doctor', 'admin')) {
+          <a routerLink="/symptoms" routerLinkActive="active-link">
+            Symptoms Catalog
+          </a>
+        }
+      }
+    </nav>
+
+    <div class="auth-panel">
+      @if (authService.user(); as currentUser) {
+        <div class="user-info">
+          <span class="user-name">{{ currentUser.name }}</span>
+          <span class="role-badge">{{ currentUser.roles.join(', ') }}</span>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" (click)="logout()">
+          Sign Out
+        </button>
+      } @else {
+        <a routerLink="/login" class="btn btn-primary btn-sm">Sign In</a>
+      }
+    </div>
+  </div>
+</header>
+

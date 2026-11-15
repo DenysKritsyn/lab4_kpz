@@ -1,0 +1,65 @@
+<section class="login-wrapper">
+  <div class="card login-card">
+    <h1 class="page-title">Sign In to Symptom Diary</h1>
+    <p class="subtitle">
+      Authenticate with your Keycloak OpenID Connect account to access your symptom diary and medical catalog.
+    </p>
+
+    @if (errorMessage()) {
+      <div class="alert alert-error" role="alert">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          class="form-control"
+          formControlName="username"
+          autocomplete="username"
+        />
+        @if (loginForm.controls.username.touched && loginForm.controls.username.invalid) {
+          <span class="field-error">Username is required.</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          class="form-control"
+          formControlName="password"
+          autocomplete="current-password"
+        />
+        @if (loginForm.controls.password.touched && loginForm.controls.password.invalid) {
+          <span class="field-error">Password is required.</span>
+        }
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="loading()">
+        {{ loading() ? 'Signing in...' : 'Sign In' }}
+      </button>
+    </form>
+
+    <div class="quick-accounts">
+      <h2 class="quick-title">Quick Fill Test Accounts (Keycloak Realm)</h2>
+      <div class="quick-grid">
+        @for (acc of quickAccounts; track acc.username) {
+          <button
+            type="button"
+            class="quick-btn"
+            (click)="selectQuickAccount(acc)"
+          >
+            <strong>{{ acc.label }}</strong>
+            <span class="quick-role">{{ acc.roleDescription }}</span>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
