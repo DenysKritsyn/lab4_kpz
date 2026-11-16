@@ -1,0 +1,162 @@
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.back-link {
+  display: inline-block;
+  font-size: 0.875rem;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.meta-line {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.summary-card {
+  margin-bottom: 1.25rem;
+}
+
+.summary-card h2,
+.details-grid h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.entry-note {
+  margin: 0;
+  color: #1e293b;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.side-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.interval-box {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.interval-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.time-range {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 0.9rem;
+}
+
+.condition-badge {
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.interval-note {
+  margin: 0.35rem 0 0.65rem;
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.symptoms-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.symptom-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #f1f5f9;
+  border-radius: 6px;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.85rem;
+}
+
+.severity-tag {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+.symptom-chip-note {
+  color: #64748b;
+}
+
+.sub-item {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.65rem 0;
+}
+
+.sub-item:last-child {
+  border-bottom: none;
+}
+
+.sub-item-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.sub-item-note {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.metrics-list {
+  margin: 0.35rem 0 0;
+  padding-left: 1.2rem;
+  font-size: 0.875rem;
+}
+
+.muted-text {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 0;
+}
+

@@ -1,0 +1,88 @@
+.page-header {
+  margin-bottom: 1.25rem;
+}
+
+.page-subtitle {
+  color: #475569;
+  font-size: 0.925rem;
+  margin: 0;
+}
+
+.symptoms-grid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 820px) {
+  .symptoms-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.symptom-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.list-toolbar {
+  margin-bottom: 1rem;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.925rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.data-table th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.03em;
+}
+
+.symptom-name-cell {
+  font-weight: 600;
+}
+
+.actions-col,
+.actions-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.actions-cell {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.empty-cell,
+.state-message {
+  text-align: center;
+  padding: 1.5rem;
+  color: #64748b;
+}
+
+.alert {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+

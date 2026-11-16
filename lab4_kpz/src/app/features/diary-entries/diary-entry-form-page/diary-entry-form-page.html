@@ -1,0 +1,185 @@
+<section class="form-section">
+  <div class="form-header">
+    <a routerLink="/diary-entries" class="back-link">&larr; Back to Diary Entries</a>
+    <h1 class="page-title">
+      {{ isEditMode ? 'Edit Diary Entry' : 'Create New Diary Entry' }}
+    </h1>
+    <p class="page-subtitle">
+      Record daily observations, time intervals, condition state, and experienced symptoms.
+    </p>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="alert alert-error" role="alert">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (loadingEntry()) {
+    <div class="card state-card">
+      <p>Loading diary entry data...</p>
+    </div>
+  } @else {
+    <form [formGroup]="entryForm" (ngSubmit)="onSubmit()" class="entry-form">
+      <div class="card main-fields-card">
+        <h2>General Entry Details</h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="entryDate">Entry Date</label>
+            <input
+              id="entryDate"
+              type="date"
+              class="form-control"
+              formControlName="entryDate"
+              [readonly]="isEditMode"
+            />
+            @if (entryForm.controls.entryDate.touched && entryForm.controls.entryDate.hasError('required')) {
+              <span class="field-error">Entry date is required.</span>
+            }
+            @if (entryForm.controls.entryDate.hasError('server')) {
+              <span class="field-error">
+                {{ entryForm.controls.entryDate.getError('server') }}
+              </span>
+            }
+          </div>
+
+          <div class="form-group flex-grow">
+            <label for="entryNote">Daily Summary Note</label>
+            <textarea
+              id="entryNote"
+              rows="3"
+              class="form-control"
+              formControlName="entryNote"
+              placeholder="Describe overall well-being, triggers, or medication notes (min 3 characters)..."
+            ></textarea>
+            @if (entryForm.controls.entryNote.touched && entryForm.controls.entryNote.hasError('required')) {
+              <span class="field-error">Daily summary note is required.</span>
+            }
+            @if (entryForm.controls.entryNote.touched && entryForm.controls.entryNote.hasError('minlength')) {
+              <span class="field-error">Summary note must be at least 3 characters long.</span>
+            }
+            @if (entryForm.controls.entryNote.touched && entryForm.controls.entryNote.hasError('maxlength')) {
+              <span class="field-error">Summary note cannot exceed 1000 characters.</span>
+            }
+            @if (entryForm.controls.entryNote.hasError('server')) {
+              <span class="field-error">
+                {{ entryForm.controls.entryNote.getError('server') }}
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="card intervals-card" formArrayName="intervals">
+        <div class="intervals-header">
+          <h2>Day Intervals &amp; Symptoms</h2>
+          <button type="button" class="btn btn-outline btn-sm" (click)="addInterval()">
+            + Add Interval
+          </button>
+        </div>
+
+        @for (intervalCtrl of intervals.controls; track $index; let idx = $index) {
+          <div class="interval-fieldset" [formGroupName]="idx">
+            <div class="interval-fieldset-head">
+              <strong>Interval #{{ idx + 1 }}</strong>
+              @if (intervals.length > 1) {
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm"
+                  (click)="removeInterval(idx)"
+                >
+                  Remove
+                </button>
+              }
+            </div>
+
+            <div class="interval-grid">
+              <div class="form-group">
+                <label [for]="'startTime-' + idx">Start Time</label>
+                <input
+                  [id]="'startTime-' + idx"
+                  type="time"
+                  step="1"
+                  class="form-control"
+                  formControlName="intervalStartTime"
+                />
+              </div>
+
+              <div class="form-group">
+                <label [for]="'endTime-' + idx">End Time</label>
+                <input
+                  [id]="'endTime-' + idx"
+                  type="time"
+                  step="1"
+                  class="form-control"
+                  formControlName="intervalEndTime"
+                />
+              </div>
+
+              <div class="form-group">
+                <label [for]="'conditionState-' + idx">Condition State (1-5)</label>
+                <select
+                  [id]="'conditionState-' + idx"
+                  class="form-control"
+                  formControlName="conditionStateId"
+                >
+                  @for (stateId of conditionStates; track stateId) {
+                    <option [ngValue]="stateId">{{ stateId | conditionLabel }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label [for]="'symptomId-' + idx">Primary Symptom (Catalog)</label>
+                <select
+                  [id]="'symptomId-' + idx"
+                  class="form-control"
+                  formControlName="symptomId"
+                >
+                  @for (symptom of symptoms(); track symptom.symptomId) {
+                    <option [ngValue]="symptom.symptomId">{{ symptom.symptomName }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label [for]="'severityId-' + idx">Symptom Severity</label>
+                <select
+                  [id]="'severityId-' + idx"
+                  class="form-control"
+                  formControlName="severityLevelId"
+                >
+                  @for (sev of severityLevels; track sev.id) {
+                    <option [ngValue]="sev.id">{{ sev.label }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label [for]="'symptomNote-' + idx">Symptom Note (Optional)</label>
+                <input
+                  [id]="'symptomNote-' + idx"
+                  type="text"
+                  class="form-control"
+                  formControlName="symptomNote"
+                  placeholder="e.g., Throbbing pain after coffee"
+                />
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <p class="muted-text">No intervals added. Click "+ Add Interval" to log symptoms.</p>
+        }
+      </div>
+
+      <div class="submit-bar">
+        <button type="submit" class="btn btn-primary" [disabled]="saving()">
+          {{ saving() ? 'Saving...' : (isEditMode ? 'Save Changes' : 'Create Diary Entry') }}
+        </button>
+        <a routerLink="/diary-entries" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  }
+</section>
+

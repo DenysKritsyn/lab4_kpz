@@ -1,0 +1,150 @@
+<section class="entries-section">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Patient Symptom Diary</h1>
+      <p class="page-subtitle">
+        Track daily health intervals, symptom severity, events, and physiological measurements.
+      </p>
+    </div>
+    <a routerLink="/diary-entries/new" class="btn btn-primary">+ New Diary Entry</a>
+  </div>
+
+  @if (actionMessage()) {
+    <div class="alert alert-success" role="status">{{ actionMessage() }}</div>
+  }
+
+  <div class="card filters-card">
+    <div class="filters-grid">
+      <app-search-box
+        label="Search Notes"
+        placeholder="Filter by entry note..."
+        [value]="searchNote()"
+        (valueChange)="searchNote.set($event)"
+      />
+
+      <div class="form-group">
+        <label for="symptomFilter">Filter by Symptom (Catalog)</label>
+        <select
+          id="symptomFilter"
+          class="form-control"
+          [ngModel]="selectedSymptomId()"
+          (ngModelChange)="selectedSymptomId.set($event); onFilterChange()"
+        >
+          <option [ngValue]="null">All symptoms</option>
+          @for (symptom of symptoms(); track symptom.symptomId) {
+            <option [ngValue]="symptom.symptomId">{{ symptom.symptomName }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="fromDateFilter">From Date</label>
+        <input
+          id="fromDateFilter"
+          type="date"
+          class="form-control"
+          [ngModel]="fromDate()"
+          (ngModelChange)="fromDate.set($event); onFilterChange()"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="toDateFilter">To Date</label>
+        <input
+          id="toDateFilter"
+          type="date"
+          class="form-control"
+          [ngModel]="toDate()"
+          (ngModelChange)="toDate.set($event); onFilterChange()"
+        />
+      </div>
+
+      <div class="filter-actions">
+        <button type="button" class="btn btn-outline" (click)="onFilterChange()">
+          Apply
+        </button>
+        <button type="button" class="btn btn-outline" (click)="resetFilters()">
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="card state-card" role="status">
+      <p>Loading diary entries...</p>
+    </div>
+  } @else if (error()) {
+    <div class="card state-card state-error" role="alert">
+      <p>{{ error() }}</p>
+      <button type="button" class="btn btn-primary" (click)="load()">Try Again</button>
+    </div>
+  } @else {
+    <div class="card table-card">
+      <div class="table-summary">
+        Showing <strong>{{ filteredEntries().length }}</strong> of
+        <strong>{{ totalCount() }}</strong> entries
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Daily Note</th>
+              <th>Intervals</th>
+              <th>Events</th>
+              <th>Measurements</th>
+              <th class="actions-col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (entry of filteredEntries(); track entry.diaryEntryId) {
+              <tr appHighlight="#eff6ff">
+                <td class="date-cell">{{ entry.entryDate }}</td>
+                <td class="note-cell">{{ entry.entryNote || 'No note recorded' }}</td>
+                <td>
+                  <span class="metric-pill">{{ entry.intervalsCount }} intervals</span>
+                </td>
+                <td>
+                  <span class="metric-pill">{{ entry.eventsCount }} events</span>
+                </td>
+                <td>
+                  <span class="metric-pill">{{ entry.measurementsCount }} records</span>
+                </td>
+                <td class="actions-cell">
+                  <a
+                    [routerLink]="['/diary-entries', entry.diaryEntryId]"
+                    class="btn btn-outline btn-sm"
+                  >
+                    Details
+                  </a>
+                  <a
+                    [routerLink]="['/diary-entries', entry.diaryEntryId, 'edit']"
+                    class="btn btn-outline btn-sm"
+                  >
+                    Edit
+                  </a>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    (click)="deleteEntry(entry)"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="empty-cell">
+                  No diary entries found matching the current filters.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</section>
+

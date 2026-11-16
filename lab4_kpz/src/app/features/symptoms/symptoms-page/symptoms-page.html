@@ -1,0 +1,116 @@
+<section class="symptoms-layout">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Medical Symptoms Catalog</h1>
+      <p class="page-subtitle">
+        Manage the reference dictionary of symptoms used across patient diary entries (accessible to Doctors and Administrators).
+      </p>
+    </div>
+  </div>
+
+  @if (actionMessage()) {
+    <div class="alert alert-success" role="status">{{ actionMessage() }}</div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-error" role="alert">
+      <span>{{ error() }}</span>
+      <button type="button" class="btn btn-outline btn-sm" (click)="load()">Retry</button>
+    </div>
+  }
+
+  <div class="symptoms-grid">
+    <div class="card form-panel">
+      <h2>{{ editingSymptomId() ? 'Edit Symptom' : 'Add New Symptom' }}</h2>
+      <form [formGroup]="symptomForm" (ngSubmit)="onSubmit()" class="symptom-form">
+        <div class="form-group">
+          <label for="symptomName">Symptom Name</label>
+          <input
+            id="symptomName"
+            type="text"
+            class="form-control"
+            formControlName="symptomName"
+            placeholder="e.g., Migraine, Fatigue, Fever"
+          />
+          @if (symptomForm.controls.symptomName.touched && symptomForm.controls.symptomName.hasError('required')) {
+            <span class="field-error">Symptom name is required.</span>
+          }
+          @if (symptomForm.controls.symptomName.touched && symptomForm.controls.symptomName.hasError('minlength')) {
+            <span class="field-error">Symptom name must be at least 2 characters.</span>
+          }
+          @if (symptomForm.controls.symptomName.touched && symptomForm.controls.symptomName.hasError('maxlength')) {
+            <span class="field-error">Symptom name must not exceed 100 characters.</span>
+          }
+          @if (symptomForm.controls.symptomName.hasError('server')) {
+            <span class="field-error">{{ symptomForm.controls.symptomName.getError('server') }}</span>
+          }
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="saving()">
+            {{ saving() ? 'Saving...' : (editingSymptomId() ? 'Update Symptom' : 'Create Symptom') }}
+          </button>
+          @if (editingSymptomId()) {
+            <button type="button" class="btn btn-outline" (click)="cancelEdit()">Cancel</button>
+          }
+        </div>
+      </form>
+    </div>
+
+    <div class="card list-panel">
+      <div class="list-toolbar">
+        <app-search-box
+          label="Filter Symptoms"
+          placeholder="Search by symptom name..."
+          [value]="searchQuery()"
+          (valueChange)="searchQuery.set($event)"
+        />
+      </div>
+
+      @if (loading()) {
+        <p class="state-message">Loading symptoms catalog...</p>
+      } @else {
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Symptom Name</th>
+              <th class="actions-col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (symptom of filteredSymptoms(); track symptom.symptomId) {
+              <tr appHighlight="#f1f5f9">
+                <td>#{{ symptom.symptomId }}</td>
+                <td class="symptom-name-cell">{{ symptom.symptomName }}</td>
+                <td class="actions-cell">
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-sm"
+                    (click)="startEdit(symptom)"
+                  >
+                    Edit
+                  </button>
+                  @if (authService.hasRole('admin')) {
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-sm"
+                      (click)="deleteSymptom(symptom)"
+                    >
+                      Delete
+                    </button>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="3" class="empty-cell">No symptoms match your search criteria.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  </div>
+</section>
+

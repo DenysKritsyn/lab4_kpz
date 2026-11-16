@@ -1,0 +1,105 @@
+@if (entry(); as item) {
+  <section class="details-section">
+    <div class="details-header">
+      <div>
+        <a routerLink="/diary-entries" class="back-link">&larr; Back to Diary Entries</a>
+        <h1 class="page-title">Diary Entry for {{ item.entryDate }}</h1>
+        <p class="meta-line">
+          Entry ID: #{{ item.diaryEntryId }} &bull; Total Recorded Symptoms:
+          <strong>{{ totalSymptomsRecorded() }}</strong>
+        </p>
+      </div>
+      <div class="header-actions">
+        <a [routerLink]="['/diary-entries', item.diaryEntryId, 'edit']" class="btn btn-primary">
+          Edit Entry
+        </a>
+      </div>
+    </div>
+
+    <div class="card summary-card">
+      <h2>Daily Overview Note</h2>
+      <p class="entry-note">{{ item.entryNote || 'No general note recorded for this date.' }}</p>
+    </div>
+
+    <div class="details-grid">
+      <div class="card">
+        <h2>Day Intervals &amp; Symptoms ({{ item.dayIntervals.length }})</h2>
+        @for (interval of item.dayIntervals; track interval.dayIntervalId) {
+          <div class="interval-box" appHighlight="#f8fafc">
+            <div class="interval-top">
+              <span class="time-range">
+                {{ interval.intervalStartTime }} &ndash; {{ interval.intervalEndTime }}
+              </span>
+              <span class="condition-badge">
+                Condition: {{ interval.conditionStateId | conditionLabel }}
+              </span>
+            </div>
+
+            @if (interval.intervalNote) {
+              <p class="interval-note">{{ interval.intervalNote }}</p>
+            }
+
+            <div class="symptoms-list">
+              @for (sym of interval.symptoms; track sym.symptomId) {
+                <div class="symptom-chip">
+                  <strong>{{ sym.symptomName || ('Symptom #' + sym.symptomId) }}</strong>
+                  <span class="severity-tag">
+                    Severity: {{ sym.severityName || sym.severityLevelId }}
+                  </span>
+                  @if (sym.symptomNote) {
+                    <span class="symptom-chip-note">({{ sym.symptomNote }})</span>
+                  }
+                </div>
+              } @empty {
+                <span class="muted-text">No specific symptoms recorded during this interval.</span>
+              }
+            </div>
+          </div>
+        } @empty {
+          <p class="muted-text">No time intervals recorded for this day.</p>
+        }
+      </div>
+
+      <div class="side-panels">
+        <div class="card">
+          <h2>Day Events ({{ item.dayEvents.length }})</h2>
+          @for (ev of item.dayEvents; track ev.dayEventId) {
+            <div class="sub-item">
+              <div class="sub-item-head">
+                <strong>{{ ev.eventTypeName || ('Event Type #' + ev.eventTypeId) }}</strong>
+                <span class="time-range">{{ ev.eventStartTime }} &ndash; {{ ev.eventEndTime }}</span>
+              </div>
+              @if (ev.eventNote) {
+                <p class="sub-item-note">{{ ev.eventNote }}</p>
+              }
+            </div>
+          } @empty {
+            <p class="muted-text">No daily events logged.</p>
+          }
+        </div>
+
+        <div class="card">
+          <h2>Measurements ({{ item.measurements.length }})</h2>
+          @for (m of item.measurements; track m.measurementId) {
+            <div class="sub-item">
+              <div class="sub-item-head">
+                <strong>Time: {{ m.measuringTime }}</strong>
+              </div>
+              <ul class="metrics-list">
+                @for (metric of m.metrics; track metric.metricId) {
+                  <li>
+                    {{ metric.metricName }}:
+                    <strong>{{ metric.metricValue }} {{ metric.unitName || '' }}</strong>
+                  </li>
+                }
+              </ul>
+            </div>
+          } @empty {
+            <p class="muted-text">No physiological measurements recorded.</p>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+}
+
